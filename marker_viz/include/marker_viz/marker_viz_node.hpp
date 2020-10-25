@@ -7,21 +7,21 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "visualization_msgs/msg/marker.hpp"
-#include "mocap4ros_msgs/msg/marker.hpp"
-#include "mocap4ros_msgs/msg/markers.hpp"
-#include "mocap4ros_msgs/msg/marker_with_id.hpp"
-#include "mocap4ros_msgs/msg/markers_with_id.hpp"
+#include "mocap4ros2_msgs/msg/marker.hpp"
+#include "mocap4ros2_msgs/msg/markers.hpp"
+#include "mocap4ros2_msgs/msg/marker_with_id.hpp"
+#include "mocap4ros2_msgs/msg/markers_with_id.hpp"
 #include "geometry_msgs/msg/vector3.hpp"
 #include "marker_viz_srvs/srv/set_marker_color.hpp"
 #include "marker_viz_srvs/srv/reset_marker_color.hpp"
 
 typedef visualization_msgs::msg::Marker VizMarker;
-typedef mocap4ros_msgs::msg::Marker MocapMarker;
-typedef mocap4ros_msgs::msg::Markers MocapMarkers;
-typedef mocap4ros_msgs::msg::Markers::SharedPtr MocapMarkersSharedPtr;
-typedef mocap4ros_msgs::msg::MarkerWithId MocapMarkerWithId;
-typedef mocap4ros_msgs::msg::MarkersWithId MocapMarkersWithId;
-typedef mocap4ros_msgs::msg::MarkersWithId::SharedPtr MocapMarkersWithIdSharedPtr;
+typedef mocap4ros2_msgs::msg::Marker MocapMarker;
+typedef mocap4ros2_msgs::msg::Markers MocapMarkers;
+typedef mocap4ros2_msgs::msg::Markers::SharedPtr MocapMarkersSharedPtr;
+typedef mocap4ros2_msgs::msg::MarkerWithId MocapMarkerWithId;
+typedef mocap4ros2_msgs::msg::MarkersWithId MocapMarkersWithId;
+typedef mocap4ros2_msgs::msg::MarkersWithId::SharedPtr MocapMarkersWithIdSharedPtr;
 
 typedef marker_viz_srvs::srv::SetMarkerColor SetMarkerColor;
 typedef marker_viz_srvs::srv::ResetMarkerColor ResetMarkerColor;
