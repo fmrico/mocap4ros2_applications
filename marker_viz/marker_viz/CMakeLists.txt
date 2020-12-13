@@ -21,7 +21,7 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 find_package(rclcpp REQUIRED)
 find_package(marker_viz_srvs REQUIRED)
-find_package(mocap4ros2_msgs REQUIRED)
+find_package(mocap_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 
@@ -34,7 +34,7 @@ target_include_directories(${PROJECT_NAME}_NODE
      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
      $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(${PROJECT_NAME}_NODE rclcpp mocap4ros2_msgs visualization_msgs geometry_msgs marker_viz_srvs)
+ament_target_dependencies(${PROJECT_NAME}_NODE rclcpp mocap_msgs visualization_msgs geometry_msgs marker_viz_srvs)
 
 target_link_libraries(marker_viz ${PROJECT_NAME}_NODE)
 

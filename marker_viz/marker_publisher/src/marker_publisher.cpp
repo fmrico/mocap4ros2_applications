@@ -3,13 +3,13 @@
 #include <iostream>
 
 #include "rclcpp/rclcpp.hpp"
-#include "mocap4ros2_msgs/msg/marker.hpp"
-#include "mocap4ros2_msgs/msg/markers.hpp"
-#include "mocap4ros2_msgs/msg/marker_with_id.hpp"
-#include "mocap4ros2_msgs/msg/markers_with_id.hpp"
+#include "mocap_msgs/msg/marker.hpp"
+#include "mocap_msgs/msg/markers.hpp"
+#include "mocap_msgs/msg/marker_with_id.hpp"
+#include "mocap_msgs/msg/markers_with_id.hpp"
 
-typedef mocap4ros2_msgs::msg::MarkerWithId MocapMarkerWithId;
-typedef mocap4ros2_msgs::msg::MarkersWithId MocapMarkers;
+typedef mocap_msgs::msg::MarkerWithId MocapMarkerWithId;
+typedef mocap_msgs::msg::MarkersWithId MocapMarkers;
 
 using namespace std::chrono_literals;
 

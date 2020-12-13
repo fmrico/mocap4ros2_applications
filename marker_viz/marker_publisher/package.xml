@@ -13,7 +13,7 @@
   <test_depend>ament_lint_common</test_depend>
 
   <depend>rclcpp</depend>
-  <depend>mocap4ros2_msgs</depend>
+  <depend>mocap_msgs</depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>
