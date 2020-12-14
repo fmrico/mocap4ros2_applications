@@ -35,6 +35,8 @@ int main(int argc, char ** argv)
 
   control_node->start_system();
 
+  //control_node->change_state();
+
   RCLCPP_INFO(control_node->get_logger(), "Wait %lf seconds or press Ctrl-C for exit");
 
   start = control_node->now();

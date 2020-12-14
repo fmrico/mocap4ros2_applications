@@ -32,6 +32,9 @@ ControllerNode::ControllerNode()
 
   control_pub_ = create_publisher<mocap_msgs::msg::Control>(
     "/mocap_control", rclcpp::QoS(100).reliable());
+
+  client_change_state_ = this->create_client<lifecycle_msgs::srv::ChangeState>(
+    "/vicon2_driver/change_state");
 }
 
 void
@@ -107,6 +110,18 @@ ControllerNode::stop_system()
   msg.header.stamp = now();
 
   control_pub_->publish(msg);
+}
+
+void
+ControllerNode::change_state()
+{
+  auto request = std::make_shared<lifecycle_msgs::srv::ChangeState::Request>();
+  request->transition.id = 3;
+
+  auto result = client_change_state_->async_send_request(request);
+
+  RCLCPP_INFO(get_logger(), "Result of the transition: %s", result.get()->success);
+
 }
 
 }  // namespace mocap_control

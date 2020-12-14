@@ -17,6 +17,9 @@
 
 #include "mocap_msgs/msg/control.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "lifecycle_msgs/msg/state.hpp"
+#include "lifecycle_msgs/srv/change_state.hpp"
+#include "lifecycle_msgs/msg/transition.hpp"
 
 namespace mocap_control
 {
@@ -28,12 +31,15 @@ public:
 
   void start_system();
   void stop_system();
+  void change_state();
 
 private:
   void control_callback(const mocap_msgs::msg::Control::SharedPtr msg);
 
   rclcpp::Subscription<mocap_msgs::msg::Control>::SharedPtr control_sub_;
   rclcpp::Publisher<mocap_msgs::msg::Control>::SharedPtr control_pub_;
+  std::shared_ptr<rclcpp::Client<lifecycle_msgs::srv::ChangeState>> client_change_state_;
+
 };
 
 }  // namespace mocap_control
