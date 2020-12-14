@@ -29,7 +29,7 @@ set(dependencies
 
 include_directories(include)
 
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME} 
   src/mocap_control/ControlledNode.cpp
   src/mocap_control/ControlledLifecycleNode.cpp
   src/mocap_control/ControllerNode.cpp

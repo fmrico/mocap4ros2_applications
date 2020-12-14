@@ -27,7 +27,7 @@ find_package(geometry_msgs REQUIRED)
 
 add_executable(marker_viz src/marker_viz_main.cpp)
 
-add_library(${PROJECT_NAME}_NODE SHARED src/marker_viz_node.cpp)
+add_library(${PROJECT_NAME}_NODE src/marker_viz_node.cpp)
 
 target_include_directories(${PROJECT_NAME}_NODE
   PUBLIC
