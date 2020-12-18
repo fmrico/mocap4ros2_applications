@@ -31,14 +31,12 @@ public:
 
   void start_system();
   void stop_system();
-  void change_state();
 
 private:
   void control_callback(const mocap_msgs::msg::Control::SharedPtr msg);
 
   rclcpp::Subscription<mocap_msgs::msg::Control>::SharedPtr control_sub_;
   rclcpp::Publisher<mocap_msgs::msg::Control>::SharedPtr control_pub_;
-  std::shared_ptr<rclcpp::Client<lifecycle_msgs::srv::ChangeState>> client_change_state_;
 
 };
 

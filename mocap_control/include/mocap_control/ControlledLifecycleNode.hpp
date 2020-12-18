@@ -27,7 +27,7 @@ public:
   ControlledLifecycleNode();
 
 protected:
-  void init(rclcpp_lifecycle::LifecycleNode::SharedPtr node);
+  void control_init(rclcpp_lifecycle::LifecycleNode::SharedPtr node);
   void control_callback(const mocap_msgs::msg::Control::SharedPtr msg);
 
   virtual void control_start();

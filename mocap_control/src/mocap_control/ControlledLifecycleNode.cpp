@@ -29,7 +29,7 @@ ControlledLifecycleNode::ControlledLifecycleNode()
 {}
 
 void
-ControlledLifecycleNode::init(rclcpp_lifecycle::LifecycleNode::SharedPtr node)
+ControlledLifecycleNode::control_init(rclcpp_lifecycle::LifecycleNode::SharedPtr node)
 {
   node_ = node;
 

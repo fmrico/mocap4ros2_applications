@@ -62,7 +62,7 @@ public:
 
   void start()
   {
-    init(shared_from_this());
+    control_init(shared_from_this());
   }
 
   void control_start() override
