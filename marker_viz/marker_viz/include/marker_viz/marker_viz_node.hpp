@@ -1,16 +1,31 @@
-#ifndef MARKER_VIZ__MARKER_VIZ_HPP_
-#define MARKER_VIZ__MARKER_VIZ_HPP_
+// Copyright 2019 Intelligent Robotics Lab
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// Author: David Vargas Frutos <david.vargas@urjc.es>
+
+#ifndef MARKER_VIZ__MARKER_VIZ_NODE_HPP_
+#define MARKER_VIZ__MARKER_VIZ_NODE_HPP_
 
 #include <chrono>
 #include <memory>
 #include <map>
+#include <string>
 
 #include "rclcpp/rclcpp.hpp"
 #include "visualization_msgs/msg/marker.hpp"
 #include "mocap_msgs/msg/marker.hpp"
 #include "mocap_msgs/msg/markers.hpp"
-#include "mocap_msgs/msg/marker_with_id.hpp"
-#include "mocap_msgs/msg/markers_with_id.hpp"
 #include "geometry_msgs/msg/vector3.hpp"
 #include "marker_viz_srvs/srv/set_marker_color.hpp"
 #include "marker_viz_srvs/srv/reset_marker_color.hpp"
@@ -19,9 +34,6 @@ typedef visualization_msgs::msg::Marker VizMarker;
 typedef mocap_msgs::msg::Marker MocapMarker;
 typedef mocap_msgs::msg::Markers MocapMarkers;
 typedef mocap_msgs::msg::Markers::SharedPtr MocapMarkersSharedPtr;
-typedef mocap_msgs::msg::MarkerWithId MocapMarkerWithId;
-typedef mocap_msgs::msg::MarkersWithId MocapMarkersWithId;
-typedef mocap_msgs::msg::MarkersWithId::SharedPtr MocapMarkersWithIdSharedPtr;
 
 typedef marker_viz_srvs::srv::SetMarkerColor SetMarkerColor;
 typedef marker_viz_srvs::srv::ResetMarkerColor ResetMarkerColor;
@@ -34,26 +46,19 @@ class MarkerVisualizer : public rclcpp::Node
 {
 public:
   MarkerVisualizer();
+
 private:
   void marker_callback(const MocapMarkersSharedPtr msg) const;
-  void marker_with_id_callback(const MocapMarkersWithIdSharedPtr msg) const;
-  void set_marker_color(const SetRequest request, 
-                                          const SetResponse response);
-  void reset_marker_color(const ResetRequest request, 
-                                            const ResetResponse response);
-  void process_marker(int index, const geometry_msgs::msg::Point& translation) const;
+  void process_marker(int index, const geometry_msgs::msg::Point & translation) const;
+
   rclcpp::Publisher<VizMarker>::SharedPtr publisher_;
   rclcpp::Subscription<MocapMarkers>::SharedPtr markers_subscription_;
-  rclcpp::Subscription<MocapMarkersWithId>::SharedPtr markers_with_id_subscription_;
-  rclcpp::Service<SetMarkerColor>::SharedPtr set_marker_color_;
-  rclcpp::Service<ResetMarkerColor>::SharedPtr reset_marker_color_;
   geometry_msgs::msg::Vector3 marker_scale_;
   float marker_lifetime_;
   std::string marker_frame_;
   std::string namespace_;
   std_msgs::msg::ColorRGBA default_marker_color_;
   std::map<int, std_msgs::msg::ColorRGBA> marker_color_;
-  bool use_markers_with_id_;
 };
 
-#endif
+#endif  // MARKER_VIZ__MARKER_VIZ_NODE_HPP_

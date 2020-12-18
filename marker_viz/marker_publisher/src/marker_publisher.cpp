@@ -1,3 +1,19 @@
+// Copyright 2019 Intelligent Robotics Lab
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// Author: David Vargas Frutos <david.vargas@urjc.es>
+
 #include <chrono>
 #include <memory>
 #include <iostream>
@@ -5,29 +21,24 @@
 #include "rclcpp/rclcpp.hpp"
 #include "mocap_msgs/msg/marker.hpp"
 #include "mocap_msgs/msg/markers.hpp"
-#include "mocap_msgs/msg/marker_with_id.hpp"
-#include "mocap_msgs/msg/markers_with_id.hpp"
-
-typedef mocap_msgs::msg::MarkerWithId MocapMarkerWithId;
-typedef mocap_msgs::msg::MarkersWithId MocapMarkers;
 
 using namespace std::chrono_literals;
 
 class MarkerPublisher : public rclcpp::Node
 {
 public:
-  MarkerPublisher() : Node("marker_publisher")
+  MarkerPublisher()
+  : Node("marker_publisher")
   {
-    publisher_ = this->create_publisher<MocapMarkers>("markers", 10);
+    publisher_ = this->create_publisher<mocap_msgs::msg::Markers>("markers", 10);
     timer_ = this->create_wall_timer(1000ms, std::bind(&MarkerPublisher::timer_callback, this));
   }
 
   void timer_callback()
   {
-    MocapMarkers markers;
-    for (int i = 1; i <= 10; ++i)
-    {
-      MocapMarkerWithId marker;
+    mocap_msgs::msg::Markers markers;
+    for (int i = 0; i < 10; i++) {
+      mocap_msgs::msg::Marker marker;
       marker.index = i;
       marker.translation.x = 0;
       marker.translation.y = 0;
@@ -35,15 +46,14 @@ public:
       markers.markers.push_back(marker);
     }
     publisher_->publish(markers);
-
-    return;
   }
+
 private:
-  rclcpp::Publisher<MocapMarkers>::SharedPtr publisher_;
+  rclcpp::Publisher<mocap_msgs::msg::Markers>::SharedPtr publisher_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
 
-int main(int argc, char *argv[])
+int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
   auto node = std::make_shared<MarkerPublisher>();
