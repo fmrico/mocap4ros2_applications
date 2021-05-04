@@ -1,0 +1,17 @@
+<library path="rqt_mocap_control">
+  <class name="rqt_mocap_control/MocapControl" type="rqt_mocap_control::MocapControl" base_class_type="rqt_gui_cpp::Plugin">
+    <description>
+      A GUI plugin to control MOCAP systems
+    </description>
+    <qtgui>
+      <group>
+        <label>Visualization</label>
+        <icon type="theme">folder</icon>
+        <statustip>Plugins related to visualization.</statustip>
+      </group>
+      <label>MOCAP Control</label>
+      <icon type="theme">image-x-generic</icon>
+      <statustip>A GUI plugin for viewing sensor_msgs/Image topics.</statustip>
+    </qtgui>
+  </class>
+</library>
