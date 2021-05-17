@@ -5,12 +5,12 @@
     </description>
     <qtgui>
       <group>
-        <label>Visualization</label>
-        <icon type="theme">folder</icon>
-        <statustip>Plugins related to visualization.</statustip>
+        <label>MOCAP4ROS2</label>
+        <icon type="theme">applications-accesories</icon>
+        <statustip>MOCAP4ROS2 Plugins.</statustip>
       </group>
       <label>MOCAP Control</label>
-      <icon type="theme">image-x-generic</icon>
+      <icon type="theme">utilities-system-monitor</icon>
       <statustip>A GUI plugin for viewing sensor_msgs/Image topics.</statustip>
     </qtgui>
   </class>
