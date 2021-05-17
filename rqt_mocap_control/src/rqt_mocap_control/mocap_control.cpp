@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <unistd.h>
 
 #include <rqt_mocap_control/mocap_control.h>
 
@@ -23,6 +24,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPainter>
+#include <QCheckBox>
 
 #include "mocap_control_msgs/msg/mocap_info.hpp"
 
@@ -77,11 +79,11 @@ void MocapControl::initPlugin(qt_gui_cpp::PluginContext& context)
   
   controller_node_ = std::make_shared<mocap_control::ControllerNode>();
 
-  QObject::connect(ui_.startButton, &QPushButton::clicked, ui_.startButton, [=]()->void{std::cerr << "clicked";});
-
   connect(ui_.startButton, SIGNAL(clicked()), this, SLOT(start_capture()));
   connect(ui_.recordAllCheckBox, SIGNAL(clicked(bool)), this, SLOT(select_record_all(bool)));
   connect(ui_.activeAllCheckBox, SIGNAL(clicked(bool)), this, SLOT(select_active_all(bool)));
+  connect(ui_.enableROS1checkBox, SIGNAL(stateChanged(int)), this, SLOT(enable_ros1(int)));
+
 }
 
 void MocapControl::shutdownPlugin()
@@ -184,6 +186,55 @@ MocapControl::select_active_all(bool checked)
 {
   for (int i = 0; i < ui_.treeWidget->topLevelItemCount(); ++i ) {
     ui_.treeWidget->topLevelItem(i)->setCheckState(0, checked? Qt::Checked : Qt::Unchecked);
+  }
+}
+
+void  MocapControl::enable_ros1(int state)
+{
+  if (state == 2) {  // QT::Checked
+    start_roscore_bridges();
+  } else {
+    if (pid_roscore_ != 0) {
+      kill(pid_roscore_, SIGTERM);
+    }
+    if (pid_bridge1_ != 0) {
+      kill(pid_bridge1_, SIGTERM);
+    }
+    if (pid_bridge2_ != 0) {
+      kill(pid_bridge2_, SIGTERM);
+    }
+  }
+}
+
+void
+MocapControl::start_roscore_bridges()
+{
+  pid_roscore_ = fork();
+
+  if (pid_roscore_ == 0) {
+    execlp("/usr/bin/xterm", "xterm", "-e", "source /opt/ros/noetic/setup.bash && roscore", NULL);
+    RCLCPP_ERROR(node_->get_logger(), "roscore finished");
+    exit(0);
+  }
+
+  sleep (1);  // avoid message for waiting roscore
+
+  pid_bridge1_ = fork();
+
+  if (pid_bridge1_ == 0) {
+    execlp("/opt/ros/foxy/bin/ros2", "ros2", "run", "ros1_bridge", "dynamic_bridge", "--bridge-all-1to2-topics", NULL);
+    RCLCPP_ERROR(node_->get_logger(), "error executing bridge");
+    sleep(1);
+    exit(0);
+  }
+
+  pid_bridge2_ = fork();
+
+  if (pid_bridge2_ == 0) {
+    execlp("/opt/ros/foxy/bin/ros2", "ros2", "run", "ros1_bridge", "mocap_info_1_to_2", NULL);
+    RCLCPP_ERROR(node_->get_logger(), "error executing bridge");
+    sleep(1);
+    exit(0);
   }
 }
 
