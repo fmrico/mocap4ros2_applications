@@ -40,10 +40,12 @@ set(dependencies
 
 set(rqt_mocap_control_SRCS
   src/rqt_mocap_control/mocap_control.cpp
+  src/rqt_mocap_control/SystemController.cpp
 )
 
 set(rqt_mocap_control_HDRS
-  include/rqt_mocap_control/mocap_control.h
+  include/rqt_mocap_control/mocap_control.hpp
+  include/rqt_mocap_control/SystemController.hpp
 )
 
 set(rqt_mocap_control_UIS
