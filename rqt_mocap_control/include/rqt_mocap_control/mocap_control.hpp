@@ -71,6 +71,7 @@ protected:
 protected slots:
 
   void start_capture();
+  void select_output_dir();
   void select_record_all(bool checked);
   void select_active_all(bool checked);
   void enable_ros1(int state);
@@ -125,6 +126,8 @@ private:
   
   void start_roscore_bridges();
   pid_t pid_roscore_ {0}, pid_bridge1_{0}, pid_bridge2_{0};
+
+  std::string current_output_dir_;
 };
 
 }  // namespace rqt_mocap_control

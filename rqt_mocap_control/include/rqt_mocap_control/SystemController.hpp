@@ -26,12 +26,13 @@ namespace rqt_mocap_control {
 struct TopicInfo 
 {
   QTreeWidgetItem * item;
+  rclcpp::SubscriptionBase::SharedPtr sub_;
 };
 
 class SystemController : public QTreeWidgetItem
 {
 public:
-  SystemController(const std::string & system_name);
+  SystemController(rclcpp::Node::SharedPtr node_, const std::string & system_name);
 
   void add_topic(const std::string & topic);
   const std::vector<std::string> get_topics();
@@ -44,11 +45,20 @@ public:
   void set_log_all(bool log);
   void update_elapsed_ts(double elapsed);
 
+  enum CaptureMode {ROSBAG, CSV};
+
+  void start_capture(const std::string & output_dir, CaptureMode mode);
+  void stop_capture();
+
 private:
+  rclcpp::Node::SharedPtr node_;
   std::string system_name_;
   std::map<std::string, TopicInfo> topics_;
 
   void update_topics();
+  rclcpp::SubscriptionBase::SharedPtr create_csv_writer(
+    const std::string & topic, const std::string & msg_type,
+    const std::string & output_dir);
 };
 
 }  // namespace rqt_mocap_control
