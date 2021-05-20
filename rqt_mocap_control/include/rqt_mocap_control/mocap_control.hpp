@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef RQT_MOCAP_CONTROL__MOCAP_CONTRO__HPP_
-#define RQT_MOCAP_CONTROL__MOCAP_CONTRO__HPP_
+#ifndef RQT_MOCAP_CONTROL__MOCAP_CONTROL__HPP_
+#define RQT_MOCAP_CONTROL__MOCAP_CONTROL__HPP_
 
 #include <rqt_gui_cpp/plugin.h>
 
@@ -32,7 +32,9 @@
 #include <vector>
 
 #include "mocap_control_msgs/msg/mocap_info.hpp"
+
 #include "mocap_control/ControllerNode.hpp"
+#include "rqt_mocap_control/SystemController.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 namespace rqt_mocap_control {
@@ -72,7 +74,7 @@ protected slots:
   void select_record_all(bool checked);
   void select_active_all(bool checked);
   void enable_ros1(int state);
-
+  void spin_loop();
   // virtual void onTopicChanged(int index);
 // 
   // virtual void onZoom1(bool checked);
@@ -112,12 +114,14 @@ protected:
 
 private:
   rclcpp::Subscription<mocap_control_msgs::msg::MocapInfo>::SharedPtr mocap_env_sub_;
-  std::map<std::string, mocap_control_msgs::msg::MocapInfo> mocap_env_;
+  std::map<std::string, SystemController*> mocap_env_;
 
   std::shared_ptr<mocap_control::ControllerNode> controller_node_;
+  QTimer *controller_spin_timer_;
   bool capturing_ {false};
 
-  void update_tree();
+  void update_tree(const mocap_control_msgs::msg::MocapInfo::SharedPtr msg);
+  void control_callback(const mocap_control_msgs::msg::Control::SharedPtr msg);
   
   void start_roscore_bridges();
   pid_t pid_roscore_ {0}, pid_bridge1_{0}, pid_bridge2_{0};
