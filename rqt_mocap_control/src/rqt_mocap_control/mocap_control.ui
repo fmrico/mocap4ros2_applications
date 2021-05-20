@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>534</width>
-    <height>336</height>
+    <width>521</width>
+    <height>414</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,7 +31,7 @@
     <rect>
      <x>10</x>
      <y>80</y>
-     <width>371</width>
+     <width>441</width>
      <height>191</height>
     </rect>
    </property>
@@ -96,8 +96,8 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>120</y>
+     <x>20</x>
+     <y>300</y>
      <width>120</width>
      <height>80</height>
     </rect>
@@ -105,7 +105,10 @@
    <property name="title">
     <string>Record mode</string>
    </property>
-   <widget class="QRadioButton" name="radioButton">
+   <widget class="QRadioButton" name="rosbagModeRadioButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -114,11 +117,14 @@
       <height>23</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>Not implemented yet</string>
+    </property>
     <property name="text">
      <string>rosbag</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton_2">
+   <widget class="QRadioButton" name="csvModeRadioButton">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -130,12 +136,15 @@
     <property name="text">
      <string>csv</string>
     </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
    </widget>
   </widget>
   <widget class="QCheckBox" name="enableROS1checkBox">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>280</y>
      <width>151</width>
      <height>23</height>
@@ -143,6 +152,19 @@
    </property>
    <property name="text">
     <string>ROS1 Support</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="selectOutputDirpushButton">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>380</y>
+     <width>431</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>/tmp</string>
    </property>
   </widget>
  </widget>

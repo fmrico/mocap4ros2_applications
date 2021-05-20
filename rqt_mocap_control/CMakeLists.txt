@@ -29,6 +29,7 @@ find_package(mocap_control REQUIRED)
 find_package(mocap_control_msgs REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(ament_cmake_python REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 set(dependencies
   rclcpp
@@ -36,6 +37,7 @@ set(dependencies
   qt_gui_cpp
   mocap_control
   mocap_control_msgs
+  sensor_msgs
 )
 
 set(rqt_mocap_control_SRCS

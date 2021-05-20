@@ -40,6 +40,8 @@ MocapControl::MocapControl()
   , widget_(0)
 {
   setObjectName("MocapControl");
+
+  current_output_dir_ = "/tmp";
 }
 
 void MocapControl::initPlugin(qt_gui_cpp::PluginContext& context)
@@ -55,9 +57,15 @@ void MocapControl::initPlugin(qt_gui_cpp::PluginContext& context)
 
   ui_.treeWidget->setColumnCount(3);
   ui_.treeWidget->setHeaderLabels({"Active", "Topic", "Record", "Elapsed"});
-  
+
+  controller_node_ = std::make_shared<mocap_control::ControllerNode>(
+    std::bind(&MocapControl::control_callback, this, std::placeholders::_1));
+  controller_spin_timer_ = new QTimer(this);
+  connect(controller_spin_timer_, SIGNAL(timeout()), this, SLOT(spin_loop()));
+  controller_spin_timer_->start(10);
+
   // Add tf and tf_static
-  auto system_item =  new SystemController("System");
+  auto system_item =  new SystemController(controller_node_, "System");
   system_item->add_topic("tf");
   system_item->add_topic("tf_static");
   mocap_env_[system_item->get_name()] = system_item;
@@ -74,13 +82,8 @@ void MocapControl::initPlugin(qt_gui_cpp::PluginContext& context)
       update_tree(msg);
     });
   
-  controller_node_ = std::make_shared<mocap_control::ControllerNode>(
-    std::bind(&MocapControl::control_callback, this, std::placeholders::_1));
-  controller_spin_timer_ = new QTimer(this);
-  connect(controller_spin_timer_, SIGNAL(timeout()), this, SLOT(spin_loop()));
-  controller_spin_timer_->start(10);
-
   connect(ui_.startButton, SIGNAL(clicked()), this, SLOT(start_capture()));
+  connect(ui_.selectOutputDirpushButton, SIGNAL(clicked()), this, SLOT(select_output_dir()));
   connect(ui_.recordAllCheckBox, SIGNAL(clicked(bool)), this, SLOT(select_record_all(bool)));
   connect(ui_.activeAllCheckBox, SIGNAL(clicked(bool)), this, SLOT(select_active_all(bool)));
   connect(ui_.enableROS1checkBox, SIGNAL(stateChanged(int)), this, SLOT(enable_ros1(int)));
@@ -112,7 +115,7 @@ MocapControl::update_tree(const mocap_control_msgs::msg::MocapInfo::SharedPtr ms
 {
   SystemController *current_system;
   if (mocap_env_.find(msg->system_source) == mocap_env_.end()) {
-    current_system = new SystemController(msg->system_source);
+    current_system = new SystemController(node_,msg->system_source);
     mocap_env_[current_system->get_name()] = current_system;
     ui_.treeWidget->addTopLevelItem(current_system);
     
@@ -131,6 +134,18 @@ MocapControl::update_tree(const mocap_control_msgs::msg::MocapInfo::SharedPtr ms
 }
 
 void
+MocapControl::select_output_dir()
+{
+  auto filename = QFileDialog::getExistingDirectory(widget_,
+    tr("Select Output Dir"), tr(current_output_dir_.c_str()));
+
+  if (!filename.isEmpty()) {
+    current_output_dir_ = filename.toUtf8().constData();
+    ui_.selectOutputDirpushButton->setText(filename);
+  }
+}
+
+void
 MocapControl::start_capture()
 {
   if (!capturing_) {
@@ -142,6 +157,17 @@ MocapControl::start_capture()
     }
   
     controller_node_->start_system(ui_.sessionTextEdit->toPlainText().toUtf8().constData(), capture_systems);
+    
+    SystemController::CaptureMode mode;
+    if (ui_.csvModeRadioButton->isChecked()) {
+      mode = SystemController::CSV;
+    } else {
+      mode = SystemController::ROSBAG;
+    }
+
+    for (auto & system : mocap_env_) {
+      system.second->start_capture(current_output_dir_, mode);
+    }
     capturing_ = true;
 
     ui_.startButton->setText("Stop");
@@ -152,6 +178,9 @@ MocapControl::start_capture()
     ui_.startButton->update();
   } else {
     controller_node_->stop_system();
+    for (auto & system : mocap_env_) {
+      system.second->stop_capture();
+    }
     capturing_ = false;
 
     ui_.startButton->setText("Start");
