@@ -24,7 +24,7 @@ namespace rqt_mocap_control {
 
 std::ostream& operator<<(std::ostream & os, const sensor_msgs::msg::Imu::SharedPtr msg)
 {
-  // ToDo: Complete tranformation
+  // ToDo: Complete tranformation from IMU Sensor
   os << std::setprecision(10) << std::fixed <<
     rclcpp::Time(msg->header.stamp).seconds() << "," <<
     msg->linear_acceleration.x << "," <<
