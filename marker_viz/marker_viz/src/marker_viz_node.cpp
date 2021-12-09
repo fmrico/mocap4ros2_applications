@@ -19,12 +19,13 @@
 #include "marker_viz/marker_viz_node.hpp"
 
 using std::placeholders::_1;
-using std::placeholders::_2;
+using namespace std::chrono_literals;
 
 MarkerVisualizer::MarkerVisualizer()
 : Node("marker_visualizer")
 {
-  publisher_ = this->create_publisher<VizMarker>("visualization_marker", 100);
+  publisher_ = this->create_publisher<visualization_msgs::msg::MarkerArray>(
+    "visualization_marker", 1000);
 
   declare_parameter<float>("default_marker_color_r", 0.0f);
   declare_parameter<float>("default_marker_color_g", 1.0f);
@@ -33,7 +34,7 @@ MarkerVisualizer::MarkerVisualizer()
   declare_parameter<double>("marker_scale_x", 0.014f);
   declare_parameter<double>("marker_scale_y", 0.014f);
   declare_parameter<double>("marker_scale_z", 0.014f);
-  declare_parameter<float>("marker_lifetime", 0.1f);
+  declare_parameter<float>("marker_lifetime", 0.01f);
   declare_parameter<std::string>("marker_frame", "mocap");
   declare_parameter<std::string>("namespace", "mocap_markers");
 
@@ -49,23 +50,31 @@ MarkerVisualizer::MarkerVisualizer()
   get_parameter<std::string>("namespace", namespace_);
 
 
-  markers_subscription_ = this->create_subscription<MocapMarkers>(
-    "markers", 100, std::bind(&MarkerVisualizer::marker_callback, this, _1));
+  markers_subscription_ = this->create_subscription<mocap_msgs::msg::Markers>(
+    "markers", 1000, std::bind(&MarkerVisualizer::marker_callback, this, _1));
 }
 
 
 void
-MarkerVisualizer::marker_callback(const MocapMarkersSharedPtr msg) const
+MarkerVisualizer::marker_callback(const mocap_msgs::msg::Markers::SharedPtr msg) const
 {
-  for (const MocapMarker & marker : msg->markers) {
-    process_marker(-1, marker.translation);
+  if (publisher_->get_subscription_count() == 0) {
+    return;
   }
+
+  static int counter = 0;
+  visualization_msgs::msg::MarkerArray visual_markers;
+  for (const mocap_msgs::msg::Marker & marker : msg->markers) {
+    visual_markers.markers.push_back(marker2visual(counter++, marker.translation));
+    
+  }
+  publisher_->publish(visual_markers);
 }
 
-void
-MarkerVisualizer::process_marker(int index, const geometry_msgs::msg::Point & translation) const
+visualization_msgs::msg::Marker
+MarkerVisualizer::marker2visual(int index, const geometry_msgs::msg::Point & translation) const
 {
-  VizMarker viz_marker;
+  visualization_msgs::msg::Marker viz_marker;
   viz_marker.header.frame_id = marker_frame_;
   viz_marker.header.stamp = rclcpp::Clock().now();
   viz_marker.ns = namespace_;
@@ -81,6 +90,6 @@ MarkerVisualizer::process_marker(int index, const geometry_msgs::msg::Point & tr
   viz_marker.pose.orientation.z = 0.0f;
   viz_marker.pose.orientation.w = 1.0f;
   viz_marker.scale = marker_scale_;
-  viz_marker.lifetime = rclcpp::Duration(marker_lifetime_);
-  publisher_->publish(viz_marker);
+  viz_marker.lifetime = rclcpp::Duration(1s);
+  return viz_marker;
 }

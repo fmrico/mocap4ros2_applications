@@ -23,17 +23,14 @@
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
-#include "visualization_msgs/msg/marker.hpp"
+#include "visualization_msgs/msg/marker_array.hpp"
+
 #include "mocap_msgs/msg/marker.hpp"
 #include "mocap_msgs/msg/markers.hpp"
 #include "geometry_msgs/msg/vector3.hpp"
 #include "marker_viz_srvs/srv/set_marker_color.hpp"
 #include "marker_viz_srvs/srv/reset_marker_color.hpp"
 
-typedef visualization_msgs::msg::Marker VizMarker;
-typedef mocap_msgs::msg::Marker MocapMarker;
-typedef mocap_msgs::msg::Markers MocapMarkers;
-typedef mocap_msgs::msg::Markers::SharedPtr MocapMarkersSharedPtr;
 
 typedef marker_viz_srvs::srv::SetMarkerColor SetMarkerColor;
 typedef marker_viz_srvs::srv::ResetMarkerColor ResetMarkerColor;
@@ -48,11 +45,13 @@ public:
   MarkerVisualizer();
 
 private:
-  void marker_callback(const MocapMarkersSharedPtr msg) const;
-  void process_marker(int index, const geometry_msgs::msg::Point & translation) const;
+  void marker_callback(const mocap_msgs::msg::Markers::SharedPtr msg) const;
+  visualization_msgs::msg::Marker marker2visual(
+    int index, const geometry_msgs::msg::Point & translation) const;
 
-  rclcpp::Publisher<VizMarker>::SharedPtr publisher_;
-  rclcpp::Subscription<MocapMarkers>::SharedPtr markers_subscription_;
+  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr publisher_;
+  rclcpp::Subscription<mocap_msgs::msg::Markers>::SharedPtr markers_subscription_;
+
   geometry_msgs::msg::Vector3 marker_scale_;
   float marker_lifetime_;
   std::string marker_frame_;
